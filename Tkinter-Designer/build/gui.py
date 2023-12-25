@@ -1,6 +1,6 @@
 
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, END
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -24,6 +24,7 @@ def add_number(num):
     text = entry_1.get()
     create_rectangle(x1_now, 289.0, x2_now, 329.0, "#D9D9D9", "black")
     create_text(text)
+    entry_1.delete(0, END)
     x1_now += 40
     x2_now += 40
 
