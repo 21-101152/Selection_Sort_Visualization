@@ -17,35 +17,57 @@ def on_entry_focus(event):
 
 def on_entry_focusout(event):
     entry_frame.config(borderwidth=1)
+
 x1_now = 50.0
 x2_now = 90.0
-def add_number(num):
+array = []
+array_text = []
+array_rectangles = []
+
+def add_number():
     global x1_now, x2_now
     text = entry_1.get()
-    create_rectangle(x1_now, 289.0, x2_now, 329.0, "#D9D9D9", "black")
-    create_text(text)
+    array_rectangles.append(create_rectangle(x1_now, 289.0, x2_now, 329.0, "#D9D9D9", "black", text))
+    create_array_element(text)
+    array.append(int(text))
+    array_text.append(text)
     entry_1.delete(0, END)
     x1_now += 40
     x2_now += 40
 
-def create_rectangle(x1, y1, x2, y2, fill_color, outline_color):
+def create_rectangle(x1, y1, x2, y2, fill_color, outline_color, number):
     canvas.create_rectangle(
     x1,
     y1,
     x2,
     y2,
     fill=fill_color,
-    outline=outline_color)
+    outline=outline_color
+    )
+    return canvas
 
-def create_text(num):
+def create_array_element(num):
     canvas.create_text(
         x1_now + 20,
         309,
-        text = num
+        text = num,
+        font=("Jost Bold", 12, "bold")
     )
+
+def sort(array):
+    minElement = array[0]
+    canvas.itemconfig(array_rectangles[0], color = "red")
+    for element in  array:
+        for element in array:
+             if element < minElement: 
+                 minElement = element
+        """ mow(rec_element, i)
+
+        rec_element.x -=   """
 
 
 window = Tk()
+window.title("Selection Sort Visualization")
 
 window.geometry("656x467")
 window.configure(bg = "#FFFFFF")
@@ -63,26 +85,7 @@ canvas = Canvas(
 
 canvas.place(x = 0, y = 0)
 
-create_rectangle(0.0, 0.0, 656.0, 67.0, "#833F3F", "")
-""" create_rectangle(128.0, 289.0, 168.0, 329.0, "#D9D9D9","black")
-create_rectangle(168.0, 289.0, 208.0, 329.0, "#D9D9D9", "black")
-create_rectangle(208.0, 289.0, 248.0, 329.0, "#D9D9D9", "black")
-create_rectangle(248.0, 289.0, 288.0, 329.0, "#D9D9D9", "black")
-create_rectangle(288.0, 289.0, 328.0, 329.0, "#D9D9D9", "black")
-create_rectangle(328.0, 289.0, 368.0, 329.0, "#D9D9D9", "black")
-create_rectangle(368.0, 289.0, 408.0, 329.0, "#D9D9D9", "black")
-create_rectangle(408.0, 289.0, 448.0, 329.0, "#D9D9D9", "black")
-create_rectangle(448.0, 289.0, 488.0, 329.0, "#D9D9D9", "black")
-create_rectangle(488.0, 289.0, 528.0, 329.0, "#D9D9D9", "black") """
-
-
-
-
-
-
-
-
-
+create_rectangle(0.0, 0.0, 656.0, 67.0, "#833F3F", "", "Hello")
 
 canvas.create_text(
     76.0,
@@ -99,7 +102,7 @@ AddButton = Button(
     image=AddButton_image,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: add_number("5"),
+    command=lambda: add_number(),
     relief="raised"
 )
 AddButton.place(
@@ -115,7 +118,7 @@ SortButton = Button(
     image= SortButton_image,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("SortButton clicked"),
+    command=lambda: sort(array),
     relief="raised"
 )
 SortButton.place(

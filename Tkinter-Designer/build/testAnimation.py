@@ -1,26 +1,18 @@
 import tkinter as tk
 
-def on_entry_focus(event):
-    # Change the border color when the entry gets focus
-    entry_frame.config(borderwidth=2, relief="solid")
-
-def on_entry_focusout(event):
-    # Change the border color back when the entry loses focus
-    entry_frame.config(borderwidth=0)
+def move_circle(dx, dy):
+    canvas.move(circle, dx, dy)
+    root.after(50, move_circle, dx, dy)  # Schedule the function to run again after 50 milliseconds
 
 root = tk.Tk()
-root.title("Entry with Stroke")
+root.title("Simple Animation")
 
-# Create a frame to act as the border
-entry_frame = tk.Frame(root, borderwidth=0)
-entry_frame.pack(padx=10, pady=10)
+canvas = tk.Canvas(root, width=400, height=300, bg='white')
+canvas.pack()
 
-# Create the entry widget inside the frame
-entry = tk.Entry(entry_frame, font=("Arial", 12))
-entry.pack(fill="both", expand=True)
+circle = canvas.create_oval(50, 50, 100, 100, fill='blue')  # Create a blue circle
 
-# Bind focus and focusout events to change the border color
-entry.bind("<FocusIn>", on_entry_focus)
-entry.bind("<FocusOut>", on_entry_focusout)
+# Call the move_circle function with a change in x and y coordinates
+move_circle(2, 2)  # Change the circle's x and y coordinates by 2 pixels
 
 root.mainloop()
