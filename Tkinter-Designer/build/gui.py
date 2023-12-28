@@ -1,7 +1,7 @@
 
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, END
-
+#from rectangle import Rectangle
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\amare\Downloads\Tkinter-Designer-master\Tkinter-Designer\build\assets\frame0")
@@ -27,7 +27,9 @@ array_rectangles = []
 def add_number():
     global x1_now, x2_now
     text = entry_1.get()
-    array_rectangles.append(create_rectangle(x1_now, 289.0, x2_now, 329.0, "#D9D9D9", "black", text))
+    create_rectangle(x1_now, 289.0, x2_now, 329.0, "#D9D9D9", "black")
+    #array_rectangles.append(Rectangle(canvas, "#D9D9D9", "black"))
+    #array_rectangles.append(create_rectangle(x1_now, 289.0, x2_now, 329.0, "#D9D9D9", "black", text))
     create_array_element(text)
     array.append(int(text))
     array_text.append(text)
@@ -35,7 +37,8 @@ def add_number():
     x1_now += 40
     x2_now += 40
 
-def create_rectangle(x1, y1, x2, y2, fill_color, outline_color, number):
+
+def create_rectangle(x1, y1, x2, y2, fill_color, outline_color):
     canvas.create_rectangle(
     x1,
     y1,
@@ -54,14 +57,14 @@ def create_array_element(num):
         font=("Jost Bold", 12, "bold")
     )
 
-def sort(array):
+""" def sort(array):
     minElement = array[0]
-    canvas.itemconfig(array_rectangles[0], color = "red")
+    #canvas.itemconfig(array_rectangles[0], color = "red")
     for element in  array:
         for element in array:
              if element < minElement: 
                  minElement = element
-        """ mow(rec_element, i)
+         mow(rec_element, i)
 
         rec_element.x -=   """
 
@@ -85,7 +88,7 @@ canvas = Canvas(
 
 canvas.place(x = 0, y = 0)
 
-create_rectangle(0.0, 0.0, 656.0, 67.0, "#833F3F", "", "Hello")
+canvas.create_rectangle(0.0, 0.0, 656.0, 67.0, fill = "#833F3F", outline = "")
 
 canvas.create_text(
     76.0,
@@ -118,7 +121,7 @@ SortButton = Button(
     image= SortButton_image,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: sort(array),
+    #command=lambda: sort(array),
     relief="raised"
 )
 SortButton.place(
@@ -128,13 +131,6 @@ SortButton.place(
     height=40.0
 )
 
-""" entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_1.png"))
-entry_bg_1 = canvas.create_image(
-    284.0,
-    165.0,
-    image=entry_image_1
-) """
 
 entry_frame = Frame(window, borderwidth=1, bg = "#000000")
 #entry_frame.pack(padx=156, pady=155)
