@@ -6,7 +6,7 @@ import time
 from rectangle import Rectangle
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\amare\Downloads\Tkinter-Designer-master\Tkinter-Designer\build\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"D:\College\Junior\Algorithms\Selection_Sort_Visualization_Project\Selection_Sort_Visualization\Tkinter-Designer\build\assets\frame0")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -38,6 +38,7 @@ def move_rectangle(rec, deltax, deltay):
     canvas.move(rec.text_widget, deltax, deltay)
 
 def sort():
+    index = 0
     minElement = array_rectangles[0]
     canvas.itemconfig(minElement.id, fill = "red")
     for i in range(1, len(array_rectangles)):
@@ -237,6 +238,7 @@ def move_rec_left(x, n, last_call = False, first_call = True):
     """
 
 def swap(minElement, distance_toright, element, distance_toleft):
+
     canvas.itemconfig(minElement, fill='red')
     canvas.itemconfig(element, fill='red')
 
