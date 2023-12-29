@@ -2,60 +2,32 @@ import tkinter as tk
 import threading
 
 
-def move_rec_right(y, indx):
-    x1, y1, x2, y2 = canvas.coords(y)
-    # Move down for the first 20 iterations
-    if move_rec_right.counter < 20:
-        canvas.move(y, 0, 2)
-        move_rec_right.counter += 1
-    # Move left for the next 20 iterations
-    elif x1 < (88+(40*indx)):
-        canvas.move(y, 2, 0)
-    # Move down the next 20 iterations
-    elif move_rec_right.counter < 40:
-        canvas.move(y, 0, -2)
-        move_rec_right.counter += 1
+def move_rec(rec, n, dir):
+    x1, y1, x2, y2 = canvas.coords(rec)
 
-    # else:
-        # Reset the counter and move back to the original position
-        # move_circle.counter = 0
-        # canvas.move(circle, 2, -2)
+    if move_rec.counter < 20:
+        canvas.move(rec, 0, dir*5)
+        move_rec.counter += 1
 
-   # move_rec_left.counter += 1
-    if move_rec_right.counter < 40:
-        root.after(40, move_rec_right, y, indx)
+    elif dir > 0 and x1 < (88+(40*n)) :
+        canvas.move(rec, dir*5, 0)
 
+    elif dir < 0 and x1 > (88+(40*n)) :
+        canvas.move(rec, dir*5, 0)    
 
-def move_rec_left(x, n):
-    x1, y1, x2, y2 = canvas.coords(x)
-    # Move up for the first 20 iterations
-    if move_rec_left.counter < 20:
-        canvas.move(x, 0, -2)
-        move_rec_left.counter += 1
-    # Move left for the next 20 iterations
-    elif x1 > (88+(40*n)):
-        canvas.move(x, -2, 0)
-    # Move down the next 20 iterations
-    elif move_rec_left.counter < 40:
-        canvas.move(x, 0, 2)
-        move_rec_left.counter += 1
+    elif move_rec.counter < 40:
+        canvas.move(rec, 0, -1*dir*5)
+        move_rec.counter += 1
 
-    # else:
-        # Reset the counter and move back to the original position
-        # move_circle.counter = 0
-        # canvas.move(circle, 2, -2)
-
-   # move_rec_left.counter += 1
-    if move_rec_left.counter < 40:
-        root.after(40, move_rec_left, x, n)
-
+    if move_rec.counter < 40:
+        root.after(35, move_rec, rec, n, dir)
 
 def swap(x, indx, y, n):
     canvas.itemconfig(x, fill='red')
     canvas.itemconfig(y, fill='red')
-    thread1 = threading.Thread(target=move_rec_right(y, indx))
-    thread2 = threading.Thread(target=move_rec_left(x, n))
-
+    thread1 = threading.Thread(target=move_rec(y, indx, 1))
+    thread2 = threading.Thread(target=move_rec(x, n, -1))
+ 
 # Start the threads
     thread1.start()
     thread2.start()
@@ -75,17 +47,13 @@ b = canvas.create_rectangle(168.0, 289.0, 208.0, 329.0, fill='blue')
 c = canvas.create_rectangle(208.0, 289.0, 248.0, 329.0, fill='blue')
 d = canvas.create_rectangle(248.0, 289.0, 288.0, 329.0, fill='blue')
 f = canvas.create_rectangle(288.0, 289.0, 328.0, 329.0, fill='blue')
-
+print (d)
 rec = canvas.create_rectangle(
-    328.0, 289.0, 368.0, 329.0, fill='blue')  # Create a blue rectangle
-
-# Set an initial counter value for the move_circle function
-move_rec_left.counter = 0
-move_rec_right.counter = 0
+    328.0, 289.0, 368.0, 329.0, fill='blue')
 
 
-# Call the move_circle function to start the animation
-# move_rec_right(a, 4)
+move_rec.counter = 0
+
 swap(d, 4, b, 2)
 
 root.mainloop()
