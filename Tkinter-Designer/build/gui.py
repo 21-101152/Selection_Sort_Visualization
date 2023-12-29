@@ -24,10 +24,6 @@ def on_entry_focusout(event):
 
 array_rectangles = []
 
-def copy_properties(src, dest):
-    for attr in vars(src).keys():
-        setattr(dest, attr, getattr(src, attr))
-
 def add_number():
     text = entry_1.get()
     array_rectangles.append(Rectangle(canvas, "LightGray", "black", text))
@@ -38,19 +34,20 @@ def move_rectangle(rec, deltax, deltay):
     canvas.move(rec.text_widget, deltax, deltay)
 
 def sort():
-    index = 0
-    minElement = array_rectangles[0]
-    canvas.itemconfig(minElement.id, fill = "red")
-    for i in range(1, len(array_rectangles)):
-        for j in range(i, len(array_rectangles)):
-            if array_rectangles[j-1].value < minElement.value:
-                copy_properties(array_rectangles[j-1], minElement)
-                #minElement =  array_rectangles[j-1]
-                canvas.itemconfig(minElement.id, fill = "red")
-                canvas.itemconfig(array_rectangles[j-1].id, fill = "LightGrey")
-                index = j
-        if (i != index): swap(minElement, (index)*40, array_rectangles[i-1], i*40)
-
+    min_idx = 0
+    canvas.itemconfig(array_rectangles[min_idx].id, fill = "red")
+    for i in range(0, len(array_rectangles)):
+        for j in range(i+1, len(array_rectangles)):
+            window.after(15, lambda: canvas.itemconfig(array_rectangles[j].id, fill='Grey'))
+            window.after(15, lambda: canvas.itemconfig(array_rectangles[j-1].id, fill='LightGrey'))
+            if array_rectangles[j].value < array_rectangles[min_idx].value:
+                min_idx = j
+            if (j == len(array_rectangles) - 1): window.after(15, lambda: canvas.itemconfig(array_rectangles[j].id, fill='LightGrey'))
+        if (i != min_idx): swap(array_rectangles[min_idx], array_rectangles[i], (min_idx-i)*40)
+        temp = array_rectangles[i]
+        array_rectangles[i] = array_rectangles[min_idx]
+        array_rectangles[min_idx] = temp
+        
 window = Tk()
 window.title("Selection Sort Visualization")
 
@@ -133,138 +130,38 @@ entry_1 = Entry(
     relief = "ridge"
 )
 
-def move_rec_up(y, vertical):
-    if (vertical > 0): move_rectangle(y, 0, 1)
-    window.after(10, move_rec_up, y, vertical-1)
+def move_rec_up(rec, vertical):
+    if vertical > 0:
+        move_rectangle(rec, 0, 1)
+        window.after(10, move_rec_up, rec, vertical - 1)
 
-def move_rec_down(y, vertical):
-    if (vertical > 0): move_rectangle(y, 0, -1)
-    window.after(10, move_rec_down, y, vertical - 1)
+def move_rec_down(rec, vertical):
+    if vertical > 0:
+        move_rectangle(rec, 0, -1)
+        window.after(10, move_rec_down, rec, vertical - 1)
 
-def move_rec_right(y, indx, last_call = False, first_call = True):
-    if first_call:
-        move_rec_down(y, 50)
-    if indx > 0:
-        move_rectangle(y, 1, 0)
-        if (indx != 1): window.after(10, move_rec_right, y, indx - 1, False, False)
-        if (indx == 1): window.after(10, move_rec_right, y, indx - 1, True, False)
-    else:
-        if last_call:
-            move_rec_up(y, 50)
-            canvas.itemconfig(y.id, fill='LightGrey')
+def move_rec_right(rec, distance):
+    if distance > 0:
+        move_rectangle(rec, 1, 0)
+        window.after(10, move_rec_right, rec, distance - 1)
 
-    """ x1, y1, x2, y2 = canvas.coords(y.id)
+def move_rec_left(rec, distance):
+    if distance > 0:
+        move_rectangle(rec, -1, 0)
+        window.after(10, move_rec_left, rec, distance - 1)
 
-    #move down
-    for i in range(50):
-        move_rectangle(y, 0, -1)
-        time.sleep(0.01)
+def swap(minElement, element, distance):
 
-    #move right
-    for i in range((indx-y.index)*40):
-        move_rectangle(y, 1, 0)
-        time.sleep(0.01)
-
-    #move up
-    for i in range(50):
-        move_rectangle(y, 0, 1)
-        time.sleep(0.01)    """
-    """  x1, y1, x2, y2 = canvas.coords(y.id)
-    # Move down for the first 20 iterations
-    if move_rec_right.counter < 20:
-        move_rectangle(y, 0, -2)
-        move_rec_right.counter += 1
-    # Move left for the next 20 iterations
-    elif x1 < (50+(40*(indx-y.index))):
-        move_rectangle(y, 2, 0)
-    # Move down the next 20 iterations
-    elif move_rec_right.counter < 40:
-        move_rectangle(y, 0, 2)
-        move_rec_right.counter += 1
-
-    if move_rec_right.counter < 40:
-        window.after(40, move_rec_right, y, indx)
-
-    if move_rec_right.counter >= 40:
-        move_rec_right.counter = 0 """
-
-def move_rec_left(x, n, last_call = False, first_call = True):
-    if first_call:
-        move_rec_up(x, 50)
-    if n > 0:
-        move_rectangle(x, -1, 0)
-        if (n != 1): window.after(10, move_rec_left, x, n - 1, False, False)
-        if (n == 1): window.after(10, move_rec_left, x, n - 1, True, False)
-    else:
-        if last_call:
-            move_rec_down(x, 50)
-            canvas.itemconfig(x.id, fill='LightGrey')
-    
-    """ x1, y1, x2, y2 = canvas.coords(x.id)
-
-    #move up
-    for i in range(50):
-        move_rectangle(x, 0, 1)
-        time.sleep(0.01)
-
-    #move left
-    for i in range((x.index-n)*40):
-        move_rectangle(x, -1, 0)
-        time.sleep(0.01)
-
-    #move left
-    for i in range(50):
-        move_rectangle(x, 0, -1)
-        time.sleep(0.01)    """
-    """  # Move up for the first 20 iterations
-    if move_rec_left.counter < 20:
-        move_rectangle(x, 0, 2)
-        move_rec_left.counter += 1
-    # Move left for the next 20 iterations
-        
-    elif x1 > (50+(40*n)):
-        move_rectangle(x, -2, 0)
-
-    # Move down the next 20 iterations
-    elif move_rec_left.counter < 40:
-        move_rectangle(x, 0, -2)
-        move_rec_left.counter += 1
-
-    if move_rec_left.counter < 40:
-        window.after(40, move_rec_left, x, n)
-    
-    if move_rec_left.counter >= 40:
-        move_rec_left.counter = 0
-    """
-
-def swap(minElement, distance_toright, element, distance_toleft):
-
-    canvas.itemconfig(minElement, fill='red')
-    canvas.itemconfig(element, fill='red')
-
-    move_rec_right(element, distance_toright)
-    move_rec_left(minElement, distance_toleft)
-
-    window.after(distance_toright * 10, lambda: canvas.itemconfig(minElement, fill='LightGrey'))
-    window.after(distance_toleft * 10, lambda: canvas.itemconfig(element, fill='LightGrey'))
-    """ global counter
-    canvas.itemconfig(minElement, fill='red')
-    canvas.itemconfig(element, fill='red')
-
-    thread1 = threading.Thread(target=move_rec_right(element, distance_toright))
-    thread2 = threading.Thread(target=move_rec_left (minElement, distance_toleft))
-
-    thread1.start()
-    thread2.start()
-
-    thread1.join()
-    thread2.join()
-
-    canvas.itemconfig(minElement, fill='LightGrey')
+    canvas.itemconfig(minElement.id, fill='red')
+    canvas.itemconfig(element.id, fill='red')
+    move_rec_down(element, 50)
+    move_rec_right(element, distance)
+    move_rec_up(element, 50)
     canvas.itemconfig(element, fill='LightGrey')
- """
-""" move_rec_right.counter = 0
-move_rec_left.counter = 0 """
+    move_rec_up(minElement, 50)
+    move_rec_left(minElement, distance)
+    move_rec_down(minElement, 50)
+    canvas.itemconfig(minElement, fill='LightGrey')
 
 entry_1.pack(fill="both", expand=True)
 entry_1.bind("<FocusIn>", on_entry_focus)
