@@ -24,29 +24,50 @@ def on_entry_focusout(event):
 
 array_rectangles = []
 
+def change_fill_color(item_id, new_color, duration):
+    canvas.itemconfig(item_id, fill=new_color)
+    window.update_idletasks()
+    time.sleep(duration)
+
 def add_number():
     text = entry_1.get()
-    array_rectangles.append(Rectangle(canvas, "LightGray", "black", text))
+    array_rectangles.append(Rectangle(canvas, "LightGrey", "black", text))
     entry_1.delete(0, END)
 
 def move_rectangle(rec, deltax, deltay):
     canvas.move(rec.id, deltax, deltay)
     canvas.move(rec.text_widget, deltax, deltay)
+    window.update_idletasks()
 
 def sort():
     min_idx = 0
-    canvas.itemconfig(array_rectangles[min_idx].id, fill = "red")
-    for i in range(0, len(array_rectangles)):
-        for j in range(i+1, len(array_rectangles)):
-            window.after(15, lambda: canvas.itemconfig(array_rectangles[j].id, fill='Grey'))
-            window.after(15, lambda: canvas.itemconfig(array_rectangles[j-1].id, fill='LightGrey'))
+    change_fill_color(array_rectangles[min_idx].id, 'red', 0.25)
+    for i in range(0, len(array_rectangles)-1):
+        min_idx = i
+        change_fill_color(array_rectangles[min_idx].id, 'red', 0.25)
+        for j in range(i, len(array_rectangles)):
+            if (j != min_idx): 
+                change_fill_color(array_rectangles[j].id, 'Grey', 0.1)
+                time.sleep(0.2)
+            if (j-1 != min_idx):
+                change_fill_color(array_rectangles[j-1].id, 'LightGrey', 0.1)
+                time.sleep(0.2)
             if array_rectangles[j].value < array_rectangles[min_idx].value:
+                change_fill_color(array_rectangles[min_idx].id, 'LightGrey', 0.25)
+                time.sleep(0.2)
                 min_idx = j
-            if (j == len(array_rectangles) - 1): window.after(15, lambda: canvas.itemconfig(array_rectangles[j].id, fill='LightGrey'))
-        if (i != min_idx): swap(array_rectangles[min_idx], array_rectangles[i], (min_idx-i)*40)
-        temp = array_rectangles[i]
-        array_rectangles[i] = array_rectangles[min_idx]
-        array_rectangles[min_idx] = temp
+                change_fill_color(array_rectangles[min_idx].id, 'red', 0.25)
+                time.sleep(0.2)
+            if (j == len(array_rectangles) - 1) and (j != min_idx): 
+                change_fill_color(array_rectangles[j].id, 'LightGrey', 0.25)
+                time.sleep(0.2)
+        if (i < min_idx):
+            swap(array_rectangles[min_idx], array_rectangles[i], (min_idx-i)*40)
+            array_rectangles[i], array_rectangles[min_idx] = array_rectangles[min_idx], array_rectangles[i]
+        else:
+            change_fill_color(array_rectangles[min_idx].id, 'LightGrey', 0.25)
+            time.sleep(0.25)
+       
         
 window = Tk()
 window.title("Selection Sort Visualization")
@@ -131,37 +152,45 @@ entry_1 = Entry(
 )
 
 def move_rec_up(rec, vertical):
-    if vertical > 0:
+    for _ in range (vertical):
         move_rectangle(rec, 0, 1)
-        window.after(10, move_rec_up, rec, vertical - 1)
+        window.update_idletasks()
+        time.sleep(0.001)
+    time.sleep(0.1)
 
 def move_rec_down(rec, vertical):
-    if vertical > 0:
+    for _ in range (vertical):
         move_rectangle(rec, 0, -1)
-        window.after(10, move_rec_down, rec, vertical - 1)
+        window.update_idletasks()
+        time.sleep(0.001)
+    time.sleep(0.1)
 
 def move_rec_right(rec, distance):
-    if distance > 0:
+    for _ in range (distance):
         move_rectangle(rec, 1, 0)
-        window.after(10, move_rec_right, rec, distance - 1)
+        window.update_idletasks()
+        time.sleep(0.001)
+    time.sleep(0.1)
 
 def move_rec_left(rec, distance):
-    if distance > 0:
+    for _ in range (distance):
         move_rectangle(rec, -1, 0)
-        window.after(10, move_rec_left, rec, distance - 1)
+        window.update_idletasks()
+        time.sleep(0.001)
+    time.sleep(0.1)
 
 def swap(minElement, element, distance):
 
-    canvas.itemconfig(minElement.id, fill='red')
-    canvas.itemconfig(element.id, fill='red')
+    change_fill_color(minElement.id, 'red', 0.25)
+    change_fill_color(element.id, 'red', 0.25)
     move_rec_down(element, 50)
     move_rec_right(element, distance)
     move_rec_up(element, 50)
-    canvas.itemconfig(element, fill='LightGrey')
+    change_fill_color(element.id, 'LightGrey', 0.25)
     move_rec_up(minElement, 50)
     move_rec_left(minElement, distance)
     move_rec_down(minElement, 50)
-    canvas.itemconfig(minElement, fill='LightGrey')
+    change_fill_color(minElement.id, 'LightGrey', 0.25)
 
 entry_1.pack(fill="both", expand=True)
 entry_1.bind("<FocusIn>", on_entry_focus)
