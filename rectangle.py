@@ -2,8 +2,8 @@
 from pathlib import Path
 from tkinter import Tk, Canvas
 class Rectangle:
-    xleft = 50
-    xright = 90
+    xleft = 20
+    xright = xleft+40
     ydown = 289
     yup = 329
     index = 1
