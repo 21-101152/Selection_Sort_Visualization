@@ -1,4 +1,5 @@
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, END
+from tkinter import ttk
 import time
 from rectangle import Rectangle
 
@@ -11,6 +12,82 @@ def on_entry_focus(event):
 
 def on_entry_focusout(event):
     entry_frame.config(borderwidth=1)
+
+def on_sort_selection(event):
+    pass  
+
+def on_sort_button_click():
+    selected_sort = sort_options.get()
+    delete_element(no_more_elements)
+    if selected_sort == "Insertion Sort":
+        clarification(selected_sort)
+        insertion_sort()
+    elif selected_sort == "Selection Sort":
+        clarification(selected_sort)
+        selection_sort()
+
+def create_circle(marginx, color):
+    circle = canvas.create_oval(marginx - 7.5, 395, marginx + 7.5, 410 , fill=color)
+    return circle
+
+def delete_clarifications():
+    delete_element(redCircleText)
+    delete_element(redCircle)
+    delete_element(greyCircleText)
+    delete_element(greyCircle)
+    delete_element(greenCircleText)
+    delete_element(greenCircle)
+
+def clarification(type):
+    global redCircle, greenCircle, greyCircle, redCircleText, greenCircleText, greyCircleText
+    if type == "Selection Sort":
+        delete_clarifications()
+        redCircle = create_circle(52.5 ,"red")
+        redCircleText = canvas.create_text(
+            120.0,
+            402.5,
+            text="Min element",
+            font = ("Jost Bold", 12, "bold")
+        )
+        greyCircle = create_circle(242.5, "Grey")
+        greyCircleText = canvas.create_text(
+            320.0,
+            402.5,
+            text="Current element",
+            font = ("Jost Bold", 12, "bold")
+        )
+        greenCircle = create_circle(442.5, "Green")
+        greenCircleText = canvas.create_text(
+            529.0,
+            402.5,
+            text="Sorted subarray",
+            font = ("Jost Bold", 12, "bold")
+        )
+    elif type == "Insertion Sort":
+        delete_clarifications()
+        redCircle = create_circle(52.5 ,"red")
+        redCircleText = canvas.create_text(
+            130.0,
+            402.5,
+            text="Element to insert",
+            font = ("Jost Bold", 12, "bold")
+        )
+        greyCircle = create_circle(242.5, "Grey")
+        greyCircleText = canvas.create_text(
+            320.0,
+            402.5,
+            text="Current   Element",
+            font = ("Jost Bold", 12, "bold")
+        )
+        greenCircle = create_circle(442.5, "Green")
+        greenCircleText = canvas.create_text(
+            545.0,
+            402.5,
+            text="Sorted subarray till now",
+            font = ("Jost Bold", 12, "bold")
+        )
+
+
 
 def create_text_once(marginx, marginy, my_text, my_font):
     global no_more_elements
@@ -37,6 +114,7 @@ def set_initial_arrtibutes_rectangle():
 
 def clear_button_clicked():
     for i in range (len(array_rectangles)):
+        delete_clarifications()
         delete_element(array_rectangles[i].id)
         delete_element(array_rectangles[i].text_widget)
     array_rectangles.clear()
@@ -94,10 +172,10 @@ def move_rec_left(rec, distance):
         time.sleep(0.001)
     time.sleep(0.1)
 
+
 def swap(minElement, element, distance):
 
     change_fill_color(minElement.id, 'red', 0.25)
-    change_fill_color(element.id, 'red', 0.25)
     move_rec_down(element, 50)
     move_rec_right(element, distance)
     move_rec_up(element, 50)
@@ -107,20 +185,21 @@ def swap(minElement, element, distance):
     move_rec_down(minElement, 50)
     change_fill_color(minElement.id, 'LightGrey', 0.25)
 
-def sort():
-    delete_element(no_more_elements)
+def selection_sort():
     min_idx = 0
     change_fill_color(array_rectangles[min_idx].id, 'red', 0.25)
     for i in range(0, len(array_rectangles)-1):
         min_idx = i
         change_fill_color(array_rectangles[min_idx].id, 'red', 0.25)
         for j in range(i, len(array_rectangles)):
-            if (j != min_idx): 
-                change_fill_color(array_rectangles[j].id, 'Grey', 0.1)
+            
+            if (j-1 != min_idx) and (j != i):
+                change_fill_color(array_rectangles[j-1].id, 'LightGrey', 0.25) 
                 time.sleep(0.2)
-            if (j-1 != min_idx):
-                change_fill_color(array_rectangles[j-1].id, 'LightGrey', 0.1)
+            if (j != min_idx):
+                change_fill_color(array_rectangles[j].id, 'Grey', 0.25)
                 time.sleep(0.2)
+            
             if array_rectangles[j].value < array_rectangles[min_idx].value:
                 change_fill_color(array_rectangles[min_idx].id, 'LightGrey', 0.25)
                 time.sleep(0.2)
@@ -136,13 +215,39 @@ def sort():
         else:
             change_fill_color(array_rectangles[min_idx].id, 'LightGrey', 0.25)
             time.sleep(0.25)
-       
+        change_fill_color(array_rectangles[i].id, 'Green', 0.25)
+    change_fill_color(array_rectangles[-1].id, 'Green', 0.25)
+
+
+def insertion_sort():
+    for i in range(1, len(array_rectangles)):
+        key = i
+        j = i - 1
+        change_fill_color(array_rectangles[key].id, 'red', 0.25)
+        while j >= 0 and array_rectangles[key].value < array_rectangles[j].value:
+            if (j == i - 1):
+                time.sleep(0.5)
+                for k in range (0, j+1):
+                    change_fill_color(array_rectangles[k].id, 'LightGrey', 0)
+            change_fill_color(array_rectangles[key].id, 'red', 0.25)
+            change_fill_color(array_rectangles[j].id, 'Grey', 0.25)
+            time.sleep(0.1)
+            swap(array_rectangles[j+1], array_rectangles[j], 40)
+            change_fill_color(array_rectangles[j+1].id, 'LightGrey', 0.25)
+            array_rectangles[j], array_rectangles[j+1] = array_rectangles[j+1], array_rectangles[j]
+            j -= 1
+            key = j + 1
+            window.update_idletasks()
+            time.sleep(0.1)
+        for k in range (0, i+1):
+            change_fill_color(array_rectangles[k].id, 'Green', 0)
+        time.sleep(0.5)
+
+   
         
 window = Tk()
-window.title("Selection Sort Visualization")
+window.title("Sort Visualization")
 
-window.geometry("656x500")
-window.configure(bg = "#FFFFFF")
 
 
 canvas = Canvas(
@@ -159,10 +264,10 @@ canvas.place(x = 0, y = 0)
 canvas.create_rectangle(0.0, 0.0, 656.0, 67.0, fill = "#833F3F", outline = "")
 
 canvas.create_text(
-    76.0,
+    200.0,
     11.0,
     anchor="nw",
-    text="Selection Sort Visualization",
+    text="Sort Visualization",
     fill="#FFFFFF",
     font=("Inter Black", 36 * -1)
 )
@@ -179,6 +284,15 @@ button_style = {
     "borderwidth": 0,
 }
 
+
+
+window.geometry("656x500")
+window.configure(bg = "#FFFFFF")
+sort_options = ttk.Combobox(window, values=["Insertion Sort", "Selection Sort"])
+sort_options.current(0)
+sort_options.place(x=100.0, y=200.0, width=120.0, height=30.0)
+sort_options.bind("<<ComboboxSelected>>", on_sort_selection)
+
 AddButton = Button(
     window,
     text= "Add",
@@ -194,10 +308,11 @@ AddButton.place(
 )
 
 
+
 SortButton = Button(
     window,
     text = "Sort",
-    command=lambda: sort(),
+    command=on_sort_button_click,
     **button_style
 )
 
@@ -244,6 +359,13 @@ entry_1 = Entry(
 )
 
 no_more_elements = None
+redCircle= None
+greenCircle= None
+greyCircle= None
+redCircleText = None
+greyCircleText = None
+greenCircleText = None
+
 
 entry_1.pack(fill="both", expand=True)
 entry_1.bind("<FocusIn>", on_entry_focus)
