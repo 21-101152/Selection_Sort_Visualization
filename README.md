@@ -1,4 +1,4 @@
-# Selection_Sort_Visualization
+# Selection Sort Visualization
 A selection sort algorithm visualization using TkinterDesigner with Python
 
 | Team Members    |
